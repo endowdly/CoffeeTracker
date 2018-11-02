@@ -5,14 +5,24 @@
 # Since we are technically _reading_ the balance from the tracker file, verb will be read.
 # However, I expect people will want to use get. So, I will make an alias for Read- as Get-
 
-# Starting in Windows PowerShell 5.0, Write-Host is a wrapper for Write-Information. 
-# This allows you to use Write-Host to emit output to the information stream. 
-# This enables the capture or suppression of data written using Write-Host while preserving backwards compatibility. 
-
 function Read-CoffeeBalance {
+    <#
+    .Synopsis
+        Read the Coffee Balance from the Tracker File.
+    .Description
+        Read the Coffee Balance from the Tracker File.
+    .Example
+        PS C:\> Read-CoffeeBalance
+        Return the balance as an integer of cups.
+    .Example
+        PS C:\> Read-CoffeeBalance -Pretty
+        Return the balance as an integer of cups _beautifully_ (for the console).
+    #>
     [CmdletBinding()]
+    [Alias('Get-CoffeeBalance')]
+
     param (
-        # Output "Beautifully". If you want to capture this to output, use -InfomrationVariable, -InformationAction, or redirect the number 6 stream to output: `6>&1`. 
+        # Output 'Beautifully'. Capture this output with the Information Stream (PowerShell 5+)
         [Parameter()]
         [switch]
         [Alias('ConsoleOutput')]
@@ -55,8 +65,8 @@ function Read-CoffeeBalance {
                 $Data = Get-Content $CoffeeTrackerPath | ConvertFrom-Json
                 $Data.Balance | Prettify
             }
-            catch [System.Management.Automation.ItemNotFoundException], [System.IO.FileNotFoundException] {
-                ThrowAFileFit
+            catch {
+                ThrowAFileFit   # Must be Json
             }            
         }
         else {

@@ -1,4 +1,14 @@
 function Update-CoffeeTracker {
+    <#
+    .SYNOPSIS
+        Updates the balance of the current Tracker File.
+    .DESCRIPTION
+        Updates the balance of the current Tracker File. When called, it calculates the current balance from the 
+        data available in the Coffee and Tracker data.
+    .EXAMPLE
+        PS C:\> Update-CoffeeTracker
+        The only way it can be used.
+    #>
     [CmdletBinding()]
     param (
         # The Data to Update. Should be a PSObject.

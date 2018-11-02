@@ -1,4 +1,14 @@
 function Add-CoffeeDebit { 
+    <#
+    .Synopsis
+        Add debit Data to CoffeeTracker File.
+    .Description
+        Adds credit Data to CoffeeTracker File by reading the Json data, converting it to a PowerShell object,
+        changing the data, converting it back to Json data, and resetting the file.
+    .Example
+        PS C:\>  Add-CoffeeDebit -Cups 2
+        Adds 2 Cups to the Tracker.Debit Data of CoffeeTracker File.
+    #>
     [CmdletBinding(SupportsShouldProcess)]
     param (
         # The amount of cups taken. Default: 1
