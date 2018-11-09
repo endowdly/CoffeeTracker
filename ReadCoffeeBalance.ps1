@@ -1,12 +1,15 @@
-# Get vs. Read
-# The Get verb is used to retrieve a resource, such as a file. The Read verb is used to get information from a source, such as a file.
-# Source -> https://docs.microsoft.com/en-us/powershell/developer/cmdlet/approved-verbs-for-windows-powershell-commands
-
+# > Get vs. Read
+# > The Get verb is used to retrieve a resource, such as a file. The Read verb is used to get information from a source, such as a file.
+# -> https://docs.microsoft.com/en-us/powershell/developer/cmdlet/approved-verbs-for-windows-powershell-commands
 # Since we are technically _reading_ the balance from the tracker file, verb will be read.
-# However, I expect people will want to use get. So, I will make an alias for Read- as Get-
+# However, I expect people will want to use get.
+
+# > Starting in Windows PowerShell 5.0, Write-Host is a wrapper for Write-Information. 
+#   This allows you to use Write-Host to emit output to the information stream. 
+#   This enables the capture or suppression of data written using Write-Host while preserving backwards compatibility. 
 
 function Read-CoffeeBalance {
-    <#
+     <#
     .Synopsis
         Read the Coffee Balance from the Tracker File.
     .Description
@@ -18,11 +21,11 @@ function Read-CoffeeBalance {
         PS C:\> Read-CoffeeBalance -Pretty
         Return the balance as an integer of cups _beautifully_ (for the console).
     #>
+    
+    [Alias("Get-CoffeeBalance")]
     [CmdletBinding()]
-    [Alias('Get-CoffeeBalance')]
-
     param (
-        # Output 'Beautifully'. Capture this output with the Information Stream (PowerShell 5+)
+        # Output "Beautifully". If you want to capture this to output, use -InformationVariable, -InformationAction, or redirect the number 6 stream to output: `6>&1`. 
         [Parameter()]
         [switch]
         [Alias('ConsoleOutput')]
@@ -39,6 +42,8 @@ function Read-CoffeeBalance {
         }
 
         filter Prettify {
+            $s = if ($_ -eq 1) { "" } else { "s" }
+
             if ($Pretty) {
                 $Color = 
                     switch ($_) {
@@ -49,7 +54,7 @@ function Read-CoffeeBalance {
 
                 Write-Host "You have " -NoNewline
                 Write-Host $_ -ForegroundColor $Color -NoNewline 
-                Write-Host " cups of " -NoNewline
+                Write-Host " cup$s of " -NoNewline
                 Write-Host "coffee" -ForegroundColor White -NoNewline
                 Write-Host " remaining."
             }
@@ -65,8 +70,8 @@ function Read-CoffeeBalance {
                 $Data = Get-Content $CoffeeTrackerPath | ConvertFrom-Json
                 $Data.Balance | Prettify
             }
-            catch {
-                ThrowAFileFit   # Must be Json
+            catch [System.ArgumentException] {   # Try to only catch malformed Json here
+                ThrowAFileFit
             }            
         }
         else {

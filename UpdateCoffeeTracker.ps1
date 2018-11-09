@@ -1,5 +1,5 @@
 function Update-CoffeeTracker {
-    <#
+        <#
     .SYNOPSIS
         Updates the balance of the current Tracker File.
     .DESCRIPTION
@@ -38,35 +38,33 @@ function Update-CoffeeTracker {
                 Dollar { ($x.Amount * 100) -as [System.Int32] }
             }
         }
-
+    }
+   
+    end {
         $Tags = @(
             $MyInvocation.MyCommand.Name
             "End"
             "Data"
         )
-    }
-   
-    end {
         Write-Information "Current Balance: $( $Data.Balance ) cups" -Tags $Tags
 
-        $CupDebit = $Data.Tracker.Debit.Cups | SimpleSum
+        $CupDebit = $Data.Tracker.Debit | ForEach-Object Cups | SimpleSum
         
         # To keep it simple, we will push everything to cents.
         $Cost = $Data.Coffee | CostToCents
         $Credit = $Data.Tracker.Credit | AmountToCents | SimpleSum
+        Write-Information "Cost: ${Cost} cents" -Tags $Tags
+        Write-Information "Total Credit: ${Credit} cents" -Tags $Tags
 
-        Write-Information "Cost: $Cost cents" -Tags $Tags
-        Write-Information "Total Credit: $Credit cents" -Tags $Tags
-
+        # Total cup credit will be credit divided by cost -- (amount ¢) / (amount ¢ / cup) = cups
         $CupCredit = $Credit / $Cost 
         $Balance = $CupCredit - $CupDebit
 
-        Write-Information "New Balance: $Balance cups" -Tags $Tags        
+        Write-Information "New Balance: $Balance cups" -Tags $Tags
+        
         
         $Data.Balance = $Balance 
-
         Write-Verbose "Balance Updated"
-
         $Data   # return
     }
 }

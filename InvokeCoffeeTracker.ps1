@@ -1,5 +1,5 @@
 function Invoke-CoffeeTracker {
-    <#
+     <#
     .Synopsis
         The main function to change your CoffeeTracker File!
     .Description
@@ -57,7 +57,11 @@ function Invoke-CoffeeTracker {
 
         [Parameter(ParameterSetName="Take")]
         [switch]
-        $Take
+        $Take,
+
+        [Alias("Shh", "Z") ]
+        [switch]
+        $Silent 
     )
     
     begin {

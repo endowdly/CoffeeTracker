@@ -1,4 +1,3 @@
-function Add-CoffeeCredit {
     <#
     .Synopsis
         Adds credit Data to CoffeeTracker File.
@@ -9,6 +8,7 @@ function Add-CoffeeCredit {
         PS C:\> Add-CoffeeCredit -Amount 25 -Unit Cent
         Adds 25 Cents to the Tracker.Credit Data of CoffeeTracker File.
     #>
+function Add-CoffeeCredit {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         # The Amount added to the Pot.
@@ -24,7 +24,12 @@ function Add-CoffeeCredit {
         # The Date of the Credit. Default: Now
         [Parameter(Position=2)]
         [System.DateTime]
-        $Date = [System.DateTime]::Now 
+        $Date = [System.DateTime]::Now,
+
+        # No Report
+        [Alias("Shh", "Z")]
+        [switch]
+        $Silent
     )
     
     begin {
@@ -56,8 +61,12 @@ function Add-CoffeeCredit {
             Update-CoffeeTracker $Data |
             ConvertTo-Json -Depth 3 | 
             Set-Content $CoffeeTrackerPath -Encoding UTF8
-        }
 
-        Write-Verbose "Updated $CoffeeTrackerPath"
+            Write-Verbose "Updated $CoffeeTrackerPath"
+            
+            if (-not $Silent) {
+                Read-CoffeeBalance -Pretty 
+            }
+        } 
     }
 }

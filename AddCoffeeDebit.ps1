@@ -1,4 +1,3 @@
-function Add-CoffeeDebit { 
     <#
     .Synopsis
         Add debit Data to CoffeeTracker File.
@@ -9,6 +8,7 @@ function Add-CoffeeDebit {
         PS C:\>  Add-CoffeeDebit -Cups 2
         Adds 2 Cups to the Tracker.Debit Data of CoffeeTracker File.
     #>
+function Add-CoffeeDebit { 
     [CmdletBinding(SupportsShouldProcess)]
     param (
         # The amount of cups taken. Default: 1
@@ -19,7 +19,12 @@ function Add-CoffeeDebit {
         # The Date of the taking: Default: Now
         [Parameter(Position=1)]
         [System.DateTime]
-        $Date = [System.DateTime]::Now
+        $Date = [System.DateTime]::Now,
+
+        # No Report
+        [Alias("Shh", "Z")]
+        [switch]
+        $Silent
     )
     
     begin {
@@ -42,8 +47,10 @@ function Add-CoffeeDebit {
             Update-CoffeeTracker $Data |
             ConvertTo-Json -Depth 3 | 
             Set-Content $CoffeeTrackerPath -Encoding UTF8
-        }
-
-        Write-Verbose "Updated $CoffeeTrackerPath"
+            Write-Verbose "Updated $CoffeeTrackerPath"
+            if (-not $Silent) {
+                Read-CoffeeBalance -Pretty 
+            }
+        } 
     }
 }

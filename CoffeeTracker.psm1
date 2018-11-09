@@ -37,5 +37,3 @@ Join-Path $PSScriptRoot *.ps1 -Resolve | ForEach-Object { . $_ }
 if ($Create) {
     New-CoffeeTracker $CoffeeTrackerPath
 }
-
-Set-Alias Get-CoffeeBalance Read-CoffeeBalance
