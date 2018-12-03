@@ -1,21 +1,23 @@
+<#
+.Synopsis
+    Sets the Path of the CoffeeTracker File.
+.Description
+    Sets the Path of the CoffeeTracker File. Accepts wildcard input. Does not support literal Paths.
+    Does not support multiple Paths.
+.Example 
+    PS C:\> Set-CoffeeTracker ~/.coffeetracker
+    Sets the File named '.coffeetracker' in the Home Directory as the CoffeeTracker File to use.
+.Inputs
+    System.Object
+        Can be a System.String descibing a Path or a System.IO.FileInfo object.
+.Outputs
+    System.Void
+#>
 function Set-CoffeeTracker {
-    <#
-    .Synopsis
-        Sets the path of the CoffeeTracker file.
-    .Description
-        Sets the path of the CoffeeTracker file. Accepts wildcard input. Does not support literal paths.
-        Does not support multiple paths.
-    .Example 
-        Pending
-    .Inputs
-        System.Object
-            Can be a System.String descibing a path or a System.IO.FileInfo object.
-    .Outputs
-        System.Void
-    #>
+
     [CmdletBinding(SupportsShouldProcess)]
     param (
-       # Specifies a path to one locations. Wildcards are permitted.
+       # Specifies a Path to one Location. Wildcards are permitted.
        [Parameter(Position=0,
                   ValueFromPipeline,
                   ValueFromPipelineByPropertyName)]
@@ -40,7 +42,8 @@ function Set-CoffeeTracker {
 
         function SetTrackerToPath {
             $Msg = $Path | Resolve-Path | Split-Path -Leaf
-            if ($PSCmdlet.ShouldProcess($Msg)) {
+            
+            if ($PSCmdlet.ShouldProcess("$Msg", "Updating CoffeeTracker Path")) {
                 $Path | UpdatePath
             } 
         }

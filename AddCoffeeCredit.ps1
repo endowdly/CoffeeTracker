@@ -1,13 +1,13 @@
-    <#
-    .Synopsis
-        Adds credit Data to CoffeeTracker File.
-    .Description
-        Adds credit Data to CoffeeTracker File by reading the Json data, converting it to a PowerShell object,
-        changing the data, converting it back to Json data, and resetting the file.
-    .Example
-        PS C:\> Add-CoffeeCredit -Amount 25 -Unit Cent
-        Adds 25 Cents to the Tracker.Credit Data of CoffeeTracker File.
-    #>
+<#
+.Synopsis
+    Adds credit Data to CoffeeTracker File.
+.Description
+    Adds credit Data to CoffeeTracker File by reading the Json Data, converting it to a PowerShell object,
+    changing the Data, converting it back to Json Data, and resetting the File.
+.Example
+    PS C:\> Add-CoffeeCredit -Amount 25 -Unit Cent
+    Adds 25 Cents to the Tracker.Credit Data of CoffeeTracker File.
+#>
 function Add-CoffeeCredit {
     [CmdletBinding(SupportsShouldProcess)]
     param (

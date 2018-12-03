@@ -411,6 +411,17 @@
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Shh, Z">
+          <maml:name>Silent</maml:name>
+          <maml:Description>
+            <maml:para>Do not return the resulting Balance; no Report.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Invoke-CoffeeTracker</maml:name>
@@ -442,6 +453,17 @@
           <maml:name>Take</maml:name>
           <maml:Description>
             <maml:para>A Switch to indicate you are taking a Cup.</maml:para>
+          </maml:Description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Shh, Z">
+          <maml:name>Silent</maml:name>
+          <maml:Description>
+            <maml:para>Do not return the resulting Balance; no Report.</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -516,6 +538,18 @@
         <maml:name>Take</maml:name>
         <maml:Description>
           <maml:para>A Switch to indicate you are taking a Cup.</maml:para>
+        </maml:Description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Shh, Z">
+        <maml:name>Silent</maml:name>
+        <maml:Description>
+          <maml:para>Do not return the resulting Balance; no Report.</maml:para>
         </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>

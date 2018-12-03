@@ -1,14 +1,16 @@
+<#
+.Synopsis
+    Updates CoffeeTracker Data.
+.Description
+    Updates the Data Object. When called, it calculates the current Balance from the 
+    Data available in the Coffee and Tracker Data. This Cmdlet reports its actions with 
+    the Information Stream.
+.Example
+    PS C:\> Update-CoffeeTracker $Data
+    Returns an updated CoffeeTracker Data Object depending on what is in the original Data Object.
+#>
 function Update-CoffeeTracker {
-        <#
-    .SYNOPSIS
-        Updates the balance of the current Tracker File.
-    .DESCRIPTION
-        Updates the balance of the current Tracker File. When called, it calculates the current balance from the 
-        data available in the Coffee and Tracker data.
-    .EXAMPLE
-        PS C:\> Update-CoffeeTracker
-        The only way it can be used.
-    #>
+
     [CmdletBinding()]
     param (
         # The Data to Update. Should be a PSObject.
@@ -53,6 +55,7 @@ function Update-CoffeeTracker {
         # To keep it simple, we will push everything to cents.
         $Cost = $Data.Coffee | CostToCents
         $Credit = $Data.Tracker.Credit | AmountToCents | SimpleSum
+
         Write-Information "Cost: ${Cost} cents" -Tags $Tags
         Write-Information "Total Credit: ${Credit} cents" -Tags $Tags
 
@@ -60,8 +63,7 @@ function Update-CoffeeTracker {
         $CupCredit = $Credit / $Cost 
         $Balance = $CupCredit - $CupDebit
 
-        Write-Information "New Balance: $Balance cups" -Tags $Tags
-        
+        Write-Information "New Balance: $Balance cups" -Tags $Tags 
         
         $Data.Balance = $Balance 
         Write-Verbose "Balance Updated"

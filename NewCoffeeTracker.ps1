@@ -1,53 +1,55 @@
-function New-CoffeeTracker {
-    <#
-    .Synopsis
-        Initializes a new CoffeeTrackerFile
-    .Description
-        This is really a fancy wrapper for the New-Item Cmdlet.
-    .Example
-        PS C:\> New-CoffeeTracker -Cost 25 -Unit Cent
-        Creates a new file at the "~/CoffeeTracker.json" with a blank tracker and the coffee information as initialized.
-    #>
+<#
+.Synopsis
+    Initializes a new CoffeeTrackerFile
+.Description
+    This is really a fancy Wrapper for the New-Item Cmdlet.
+.Example
+    PS C:\> New-CoffeeTracker -Cost 25 -Unit Cent
+    Creates a new File at the "~/CoffeeTracker.json" with a blank Tracker and the coffee Information as initialized.
+#>
+function New-CoffeeTracker { 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSShouldProcess", "")]  # Handled by the wrapped Command
     [CmdletBinding(DefaultParameterSetName="PathSet", 
                    SupportsShouldProcess,
                    ConfirmImpact="Medium")]
     [OutputType([System.IO.FileInfo])]                   
     param (
-        # The path of the file or the its intended directory. Default: USERPROFILE.
+        # The Path of the File or the its intended Directory. Default: USERPROFILE.
         [Parameter(ParameterSetName="PathSet", Position=0, ValueFromPipelineByPropertyName)]
         [Parameter(ParameterSetName="NameSet", Position=0, ValueFromPipelineByPropertyName)]
         [System.String[]]
         $Path = $PWD,
 
-        # The name of the file. Default: "CoffeeTracker.json"
+        # The name of the File. Default: "CoffeeTracker.json"
         [Parameter(ParameterSetName="NameSet", Position=1, ValueFromPipelineByPropertyName)]
         [AllowNull()]
         [AllowEmptyString()]
         [System.String]
         $Name = "CoffeeTracker.json",
 
-        # The unit cost of the coffee.
+        # The unit Cost of the Coffee.
         [Parameter(ValueFromPipelineByPropertyName)]
         [ValidateNotNull()]
         [System.Double]
         $Cost,
 
-        # The unit of the coffee. Can be dollar or cent.
+        # The unit of the coffee Cost. Can be Dollar or Cent.
         [Parameter(ValueFromPipelineByPropertyName)]
         [UnitCost]
         $Unit,
 
-        # Force an existing file to be overwritten.
+        # Force an existing File to be overwritten.
         [Switch]
         $Force 
     )
     
     begin {      
-        # Copy the template
+        # Copy the Template
+        # Todo: Do not use Template, hardcode Hashtable here
         $NewData = $TemplateData.Clone()
 
         #region Set Missing Parameters
+        # Todo: Define defaults in This.Param
         if (-not $PSBoundParameters.ContainsKey("Cost")) {
             $Cost = $Default.Cost
         }

@@ -14,12 +14,13 @@ The main function to change your CoffeeTracker File!
 
 ### Add (Default)
 ```
-Invoke-CoffeeTracker [[-Amount] <Double>] [[-Unit] <UnitCost>] [-Date <DateTime>] [-Add] [<CommonParameters>]
+Invoke-CoffeeTracker [[-Amount] <Double>] [[-Unit] <UnitCost>] [-Date <DateTime>] [-Add] [-Silent]
+ [<CommonParameters>]
 ```
 
 ### Take
 ```
-Invoke-CoffeeTracker [[-Cups] <Int32>] [-Date <DateTime>] [-Take] [<CommonParameters>]
+Invoke-CoffeeTracker [[-Cups] <Int32>] [-Date <DateTime>] [-Take] [-Silent] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -159,6 +160,21 @@ A Switch to indicate you are taking a Cup.
 Type: SwitchParameter
 Parameter Sets: Take
 Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Silent
+Do not return the resulting Balance; no Report.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: Shh, Z
 
 Required: False
 Position: Named

@@ -1,13 +1,13 @@
-    <#
-    .Synopsis
-        Add debit Data to CoffeeTracker File.
-    .Description
-        Adds credit Data to CoffeeTracker File by reading the Json data, converting it to a PowerShell object,
-        changing the data, converting it back to Json data, and resetting the file.
-    .Example
-        PS C:\>  Add-CoffeeDebit -Cups 2
-        Adds 2 Cups to the Tracker.Debit Data of CoffeeTracker File.
-    #>
+<#
+.Synopsis
+    Add debit Data to CoffeeTracker File.
+.Description
+    Adds debit Data to CoffeeTracker File by reading the Json Data, converting it to a PowerShell Object,
+    changing the Data, converting it back to Json Data, and resetting the File.
+.Example
+    PS C:\>  Add-CoffeeDebit -Cups 2
+    Adds 2 Cups to the Tracker.Debit Data of CoffeeTracker File.
+#>
 function Add-CoffeeDebit { 
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -42,12 +42,15 @@ function Add-CoffeeDebit {
     
     end {
         $Data.Tracker.Debit += $NewDebit
-        # But it back into Json and set the File.
+
+        # Put it back into Json and set the File.
         if ($PSCmdlet.ShouldProcess("$CoffeeTrackerPath", "Adding data to file")) {
             Update-CoffeeTracker $Data |
             ConvertTo-Json -Depth 3 | 
             Set-Content $CoffeeTrackerPath -Encoding UTF8
+
             Write-Verbose "Updated $CoffeeTrackerPath"
+
             if (-not $Silent) {
                 Read-CoffeeBalance -Pretty 
             }

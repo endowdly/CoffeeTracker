@@ -6,9 +6,6 @@
         Until a Export-PowerShellDataFile or ConvertTo-PowerShellData is a built-in thing, we will use Json. There
         is built-in Json support as of PowerShell 3.0+. You would think importing and exporting type-safe psd1 
         files would be a priority for PowerShell... 
-
-        This data is converted to Json to store data.... until I make a good psd1 De/Serializer. I would have used
-        CliXml, however I would like the file to be slightly more readable and modifiable. 
 #>
 
 @{
