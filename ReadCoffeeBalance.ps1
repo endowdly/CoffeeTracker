@@ -1,83 +1,48 @@
 # > Get vs. Read
-# > The Get verb is used to retrieve a resource, such as a file. The Read verb is used to get information from a source, such as a file.
+# :     The Get verb is used to retrieve a resource, such as a file. The Read verb is used to get information from a source, such as a file.
 # -> https://docs.microsoft.com/en-us/powershell/developer/cmdlet/approved-verbs-for-windows-powershell-commands
-# Since we are technically reading the balance from the tracker file, verb will be read.
-# However, I expect people will want to use get.
+# Since we are technically _reading_ the balance from the tracker file, verb will be read.
 
-# > Starting in Windows PowerShell 5.0, Write-Host is a wrapper for Write-Information. 
-#   This allows you to use Write-Host to emit output to the information stream. 
-#   This enables the capture or suppression of data written using Write-Host while preserving backwards compatibility. 
-
-<#
-.Synopsis
-    Read the Coffee Balance from the Tracker File.
-.Description
-    Read the Coffee Balance from the Tracker File.
-.Example
-    PS C:\> Read-CoffeeBalance
-    Return the Balance as an Integer of Cups.
-.Example
-    PS C:\> Read-CoffeeBalance -Pretty
-    Show the Balance as an Integer of Cups beautifully (for the console) (returns null).
-#>
 function Read-CoffeeBalance {
+    <#
+    .Synopsis
+      Reads the final balance of a coffee tracker file.
+    .Description
+      Reads the final balance of a coffee tracker file.
 
-    
-    [Alias("Get-CoffeeBalance")]
+      If the -Pretty switch is used, no output is sent to STDOUT. 
+      Output is redirected to the Console and to stream 6. 
+    .Example
+      Read-CoffeeBalance
+    .Example
+      Read-CoffeeBalance -Pretty
+    .Example
+      Read-CoffeeBalance -Pretty -Path 'somecoffeefile.csv'
+    .Inputs
+      System.String
+    .Outputs
+      System.Int32
+    .Notes
+    #>
+
     [CmdletBinding()]
+
     param (
-        # Output "Beautifully". If you want to capture this to Output, use -InformationAction then -InformationVariable or redirect the information Stream to Output: '6>&1' 
+        # Output 'Beautifully'. If you want to capture this to output, use -InformationVariable, -InformationAction, or redirect the number 6 stream to output: `6>&1`. 
         [Parameter()]
-        [switch]
         [Alias('ConsoleOutput')]
-        $Pretty
+        [switch] $Pretty,
+
+        # Specifies a path to one or more locations.
+        [Parameter(ValueFromPipelineByPropertyName, ValueFromPipeline)]
+        [Alias('PSPath')]
+        [ValidateScript({ Assert-Path $_ })]
+        [string] $Path = $Default.TrackerPath
     )
     
-    begin {
-        $PathIsValid = Test-Path $CoffeeTrackerPath
-
-        function ThrowAFileFit {
-            $Msg = "No CoffeeTrackerFile found at $CoffeeTrackerPath! Use `Set-CoffeeTracker` to set a valid CoffeeTracker path."
-            $Ex = New-Object System.IO.FileNotFoundException $Msg
-            Write-Error -Exception $Ex -Category ObjectNotFound 
-        }
-
-        # Todo - Rename Prettify -> Output; Readability
-        filter Prettify {
-            $s = if ($_ -eq 1) { "" } else { "s" }
-
-            if ($Pretty) {
-                $Color = 
-                    switch ($_) {
-                        { $_ -eq 0 } { [ConsoleColor]::Blue }
-                        { $_ -gt 0 } { [ConsoleColor]::Green }
-                        { $_ -lt 0 } { [ConsoleColor]::Red }
-                    }
-
-                Write-Host "You have " -NoNewline
-                Write-Host $_ -ForegroundColor $Color -NoNewline 
-                Write-Host " cup$s of " -NoNewline
-                Write-Host "coffee" -ForegroundColor White -NoNewline
-                Write-Host " remaining."
-            }
-            else {
-                Write-Output $_
-            }
-        }
-    }
-
-    end {
-        if ($PathIsValid) {
-            try {
-                $Data = Get-Content $CoffeeTrackerPath | ConvertFrom-Json
-                $Data.Balance | Prettify
-            }
-            catch [System.ArgumentException] {   # Try to only catch malformed Json here
-                ThrowAFileFit
-            }            
-        }
-        else {
-            ThrowAFileFit
-        }
+    process {
+        $data = Import-Csv $Path
+                
+        Write-Balance $data[-1].Balance -Pretty:$Pretty
     }
 }

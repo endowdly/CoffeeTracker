@@ -1,63 +1,40 @@
-<#
-.Synopsis
-    Sets the Path of the CoffeeTracker File.
-.Description
-    Sets the Path of the CoffeeTracker File. Accepts wildcard input. Does not support literal Paths.
-    Does not support multiple Paths.
-.Example 
-    PS C:\> Set-CoffeeTracker ~/.coffeetracker
-    Sets the File named '.coffeetracker' in the Home Directory as the CoffeeTracker File to use.
-.Inputs
-    System.Object
-        Can be a System.String descibing a Path or a System.IO.FileInfo object.
-.Outputs
-    System.Void
-#>
 function Set-CoffeeTracker {
+    <#
+    .Synopsis
+        Sets the path of the CoffeeTracker file.
+    .Description
+        Sets the path of the default CoffeeTracker file. This function will confirm you want to do this. 
+        Does not support literal paths. Does not support multiple paths.
+    .Example 
+        PS> Set-CoffeeTracker h:/.myCoffee
+    .Inputs
+        System.String
+    .Outputs
+        None
+    #>
 
     [CmdletBinding(SupportsShouldProcess)]
-    param (
-       # Specifies a Path to one Location. Wildcards are permitted.
-       [Parameter(Position=0,
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '')]  # Yes it does? 
+
+    param ( 
+       # Specifies a path to one location. Wildcards are not permitted.
+       [Parameter(Mandatory,
                   ValueFromPipeline,
-                  ValueFromPipelineByPropertyName)]
-       [AllowNull()]
-       [AllowEmptyString()]
-       [SupportsWildcards()]
-       [System.String]
-       $Path 
+                  ValueFromPipelineByPropertyName,
+                  HelpMessage='Path to a location.')]
+       [ValidateScript({ Assert-Path $_ })]
+       [System.String] $Path,
+
+       [switch] $Force
     )
 
-    begin { 
-        filter UpdatePath {
-            Write-Verbose "CoffeeTrackerPath <- $_"
-            $script:CoffeeTrackerPath = Resolve-Path $_
-            return
-        }
+    $fp = Resolve-Path $Path
+    $q = $Resources.SetCoffeeTracker.ShouldContinue.Query -f $fp
+    $c = $Resources.SetCoffeeTracker.ShouldContinue.Caption
 
-        function SetTrackerToDefault {
-            Write-Verbose "-Path is null; using default TrackerPath" 
-            Join-Path $Default.TrackerPath $Default.TrackerName | UpdatePath
-        }
+    if ($PSCmdlet.ShouldContinue($q, $c) -or $Force) {
+        Write-Verbose ($Resources.SetCoffeeTracker.Verbose.Updating -f $fp)
 
-        function SetTrackerToPath {
-            $Msg = $Path | Resolve-Path | Split-Path -Leaf
-            
-            if ($PSCmdlet.ShouldProcess("$Msg", "Updating CoffeeTracker Path")) {
-                $Path | UpdatePath
-            } 
-        }
-    }
-
-    process { }
-    
-    end { 
-        switch ($Path) {
-            { $null -eq $Path } { SetTrackerToDefault }
-            { [String]::IsNullOrEmpty($Path) } { SetTrackerToDefault }
-            { [String]::IsNullOrWhiteSpace($Path) } { SetTrackerToDefault }
-            { Test-Path $Path } { SetTrackerToPath }
-            default { Write-Error "$Path is not a valid path or does not exist" -Category InvalidArgument }
-        }
+        $Default.TrackerPath = $fp
     }
 }
