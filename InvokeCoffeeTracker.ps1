@@ -46,7 +46,7 @@ function Invoke-CoffeeTracker {
     #>
 
     [CmdletBinding(SupportsShouldProcess)]
-    [Alias('Coffee, CoffeePot']
+    [Alias('Coffee, CoffeePot')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]
 
     param (
